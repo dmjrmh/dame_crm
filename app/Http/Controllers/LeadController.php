@@ -8,88 +8,111 @@ use Illuminate\Support\Facades\Auth;
 
 class LeadController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request)
-    {
-      $leads = Lead::query()
-      ->when($request->q, function ($query) use ($request) {
-        $query->where(function ($inner) use ($request) {
-          $inner->where('name', 'like', '%'.$request->q.'%')
-                ->orWhere('email', 'like', '%'.$request->q.'%')
-                ->orWhere('address', 'like', '%'.$request->q.'%');
+  /**
+   * Display a listing of the resource.
+   */
+  public function index(Request $request)
+  {
+    $user = $request->user();
+
+    $leads = Lead::query()
+      ->when($user->role !== 'manager', fn($q) => $q->where('user_id', $user->id))
+
+      // Search
+      ->when($request->filled('q'), function ($q) use ($request) {
+        $term = '%' . $request->query('q') . '%';
+        $q->where(function ($inner) use ($term) {
+          $inner->where('name', 'like', $term)
+            ->orWhere('address', 'like', $term)
+            ->orWhere('needs', 'like', $term);
         });
       })
-      ->when($request->status, function ($query) use ($request){
-        $query->where('status', $request->status);
-      })
+
+      // Filter status
+      ->when($request->filled('status'), fn($q) => $q->where('status', $request->input('status')))
+
       ->latest()
-      ->paginate(10);
+      ->paginate(10)
+      ->withQueryString();
 
-      return view('leads.index', compact('leads'));
-    }
+    return view('leads.index', compact('leads'));
+  }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-      return view('leads.create');
-    }
+  /**
+   * Show the form for creating a new resource.
+   */
+  public function create()
+  {
+    return view('leads.create');
+  }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-      $validated = $request->validate([
-        'name' => 'required',
-        'contact' => 'required',
-        'address' => 'nullable',
-        'needs' => 'nullable'
-      ]);
+  /**
+   * Store a newly created resource in storage.
+   */
+  public function store(Request $request)
+  {
+    $validated = $request->validate([
+      'name' => 'required',
+      'contact' => 'required',
+      'address' => 'nullable',
+      'needs' => 'nullable',
+      'status' => 'required|in:New,In Progress,Converted,Follow up,Lost',
+    ]);
 
-      $validated['user_id'] = $request->user()->id;
+    $validated['user_id'] = $request->user()->id;
 
-      Lead::create($validated);
+    // dd($validated);
 
-      return redirect()->route('leads.index')->with('success', 'Lead berhasil ditambahkan');
-    }
+    Lead::create($validated);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+    return redirect()->route('leads.index')->with('success', 'Lead berhasil ditambahkan');
+  }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+  /**
+   * Display the specified resource.
+   */
+  public function show(Lead $lead)
+  {
+    return view('leads.show', compact('lead'));
+  }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+  /**
+   * Show the form for editing the specified resource.
+   */
+  public function edit(Lead $lead)
+  {
+    return view('leads.edit', compact('lead'));
+  }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Lead $lead)
-    {
-      $this->authorize('delete', $lead);
+  /**
+   * Update the specified resource in storage.
+   */
+  public function update(Request $request, Lead $lead)
+  {
+    $validated = $request->validate([
+      'name' => 'required|string|max:255',
+      'contact' => 'required|string|max:255',
+      'address' => 'nullable|string|max:255',
+      'needs' => 'nullable|string|max:255',
+      'status' => 'required|string|in:New,In Progress,Converted,Follow up,Lost',
+    ]);
 
-      $lead->delete();
+    $lead->update($validated);
 
-      return redirect()->route('leads.index')->with('success', 'Lead berhasil di delete');
-    }
+    return redirect()
+      ->route('leads.index')
+      ->with('success', 'Lead updated successfully.');
+  }
+
+  /**
+   * Remove the specified resource from storage.
+   */
+  public function destroy(Lead $lead)
+  {
+    $this->authorize('delete', $lead);
+
+    $lead->delete();
+
+    return redirect()->route('leads.index')->with('success', 'Lead berhasil di delete');
+  }
 }
