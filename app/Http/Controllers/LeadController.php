@@ -19,8 +19,8 @@ class LeadController extends Controller
       ->when($user->role !== 'manager', fn($q) => $q->where('user_id', $user->id))
 
       // Search
-      ->when($request->filled('q'), function ($q) use ($request) {
-        $term = '%' . $request->query('q') . '%';
+      ->when($request->filled('query'), function ($q) use ($request) {
+        $term = '%' . $request->query('query') . '%';
         $q->where(function ($inner) use ($term) {
           $inner->where('name', 'like', $term)
             ->orWhere('address', 'like', $term)

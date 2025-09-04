@@ -24,7 +24,7 @@
           class="w-full rounded-md border px-3 py-2" />
         <select name="status" class="rounded-md border px-3 py-2">
           <option value="">All status</option>
-          @foreach (['new', 'follow_up', 'in_progress', 'converted', 'lost'] as $status)
+          @foreach (['New', 'Follow up', 'In Progess', 'Converted', 'Lost'] as $status)
             <option value="{{ $status }}" @selected(request('status') === $status)>{{ ucfirst($status) }}</option>
           @endforeach
         </select>
