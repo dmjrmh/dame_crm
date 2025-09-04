@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LeadController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 
 Route::get('/', function () {
@@ -25,6 +26,7 @@ Route::middleware('auth')->group(function () {
   });
 
   Route::resource('leads', LeadController::class);
+  Route::resource('products', ProductController::class);
 });
 
 
