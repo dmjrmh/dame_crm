@@ -36,11 +36,11 @@
       <table class="min-w-full text-sm divide-y-2 divide-gray-200">
         <thead class="bg-neutral-50 text-left">
           <tr class="*:font-medium *:text-gray-900">
-            <th class="px-4 py-3">Name</th>
-            <th class="px-4 py-3">Contact</th>
-            <th class="px-4 py-3">Address</th>
-            <th class="px-4 py-3">Status</th>
-            <th class="px-4 py-3 w-40">Actions</th>
+            <th class="px-4 py-3 text-center">Name</th>
+            <th class="px-4 py-3 text-center">Contact</th>
+            <th class="px-4 py-3 text-center">Address</th>
+            <th class="px-4 py-3 text-center">Status</th>
+            <th class="px-4 py-3 text-center w-40">Actions</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200">

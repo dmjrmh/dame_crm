@@ -83,8 +83,7 @@ class ProductController extends Controller
   {
     $data = $request->validate([
       'name' => 'required',
-      'sku' => 'required|unique:products,sku',
-      Rule::ignore($product->id),
+      'sku'  => [ 'required','string','max:100', Rule::unique('products', 'sku')->ignore($product->id)->whereNull('deleted_at'),],
       'unit' => 'required',
       'cost_price' => 'required|numeric|min:0',
       'margin_percent' => 'required|numeric|min:0',

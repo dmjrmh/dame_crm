@@ -30,13 +30,13 @@
       <table class="min-w-full text-sm divide-y-2 divide-gray-200">
         <thead class="bg-neutral-50 text-left">
           <tr class="*:font-medium *:text-gray-900">
-            <th class="px-4 py-3">Name</th>
-            <th class="px-4 py-3">SKU</th>
-            <th class="px-4 py-3">Unit</th>
-            <th class="px-4 py-3">HPP</th>
-            <th class="px-4 py-3">Margin Sales</th>
-            <th class="px-4 py-3">Harga Jual</th>
-            <th class="px-4 py-3 w-40">Actions</th>
+            <th class="px-4 py-3 text-center">Name</th>
+            <th class="px-4 py-3 text-center">SKU</th>
+            <th class="px-4 py-3 text-center">Unit</th>
+            <th class="px-4 py-3 text-center">HPP</th>
+            <th class="px-4 py-3 text-center">Margin Sales</th>
+            <th class="px-4 py-3 text-center">Harga Jual</th>
+            <th class="px-4 py-3 text-center w-40">Actions</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200">
@@ -49,15 +49,15 @@
               </td>
               <td class="px-4 py-3">{{ $product->sku }}</td>
               <td class="px-4 py-3">{{ $product->unit }}</td>
-              <td class="px-4 py-3">Rp {{ number_format($p->cost_price,2,',','.') }}</td>
-              <td class="px-4 py-3">{{ number_format($p->margin_percent,2) }}%</td>
-              <td class="px-4 py-3">Rp {{ number_format($p->sell_price,2,',','.') }}</td>
+              <td class="px-4 py-3 text-right">Rp {{ number_format($product->cost_price,2,',','.') }}</td>
+              <td class="px-4 py-3 text-right">{{ number_format($product->margin_percent,2) }}%</td>
+              <td class="px-4 py-3 text-right">Rp {{ number_format($product->sell_price,2,',','.') }}</td>
               <td class="px-4 py-3">
                 <div class="flex items-center gap-2">
                   <a href="{{ route('products.show', $product) }}" class="underline">View</a>
                   <a href="{{ route('products.edit', $product) }}" class="underline">Edit</a>
                   <form action="{{ route('products.destroy', $product) }}" method="POST"
-                    onsubmit="return confirm('Delete this lead?')">
+                    onsubmit="return confirm('Delete this product?')">
                     @csrf @method('DELETE')
                     <button class="text-red-600 underline">Delete</button>
                   </form>
