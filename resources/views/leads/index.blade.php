@@ -11,9 +11,9 @@
 
   <div class="max-w-7xl mx-auto p-6">
     {{-- flash --}}
-    @if (session('status'))
-      <div class="mb-4 rounded-lg bg-emerald-50 p-3 text-emerald-700">
-        {{ session('status') }}
+    @if (session('success'))
+      <div class="mb-4 rounded-lg bg-emerald-300 p-3 text-emerald-700">
+        {{ session('success') }}
       </div>
     @endif
 
