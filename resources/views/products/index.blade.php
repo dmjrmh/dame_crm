@@ -1,10 +1,10 @@
 <x-app-layout>
   <x-slot name="header">
     <div class="flex items-center justify-between">
-      <h2 class="text-xl font-semibold leading-tight">Leads</h2>
-      <a href="{{ route('leads.create') }}"
+      <h2 class="text-xl font-semibold leading-tight">Products</h2>
+      <a href="{{ route('products.create') }}"
         class="inline-flex items-center rounded-lg bg-emerald-600 hover:bg-white px-4 py-2 text-sm font-medium text-white hover:text-emerald-600 transition shadow-lg">
-        + Add New Lead
+        + Add New Product
       </a>
     </div>
   </x-slot>
@@ -20,14 +20,8 @@
     {{-- search/filter --}}
     <form method="GET" class="mb-4">
       <div class="flex gap-3">
-        <input type="text" name="query" value="{{ request('query') }}" placeholder="Cari nama/kontak/alamat…"
+        <input type="text" name="query" value="{{ request('query') }}" placeholder="Cari nama produk"
           class="w-full rounded-md border px-3 py-2" />
-        <select name="status" class="rounded-md border px-3 py-2">
-          <option value="">All status</option>
-          @foreach (['New', 'Follow up', 'In Progess', 'Converted', 'Lost'] as $status)
-            <option value="{{ $status }}" @selected(request('status') === $status)>{{ ucfirst($status) }}</option>
-          @endforeach
-        </select>
         <button class="rounded-md border px-4 py-2 bg-yellow-200 hover:bg-neutral-50">Apply</button>
       </div>
     </form>
@@ -37,31 +31,33 @@
         <thead class="bg-neutral-50 text-left">
           <tr class="*:font-medium *:text-gray-900">
             <th class="px-4 py-3 text-center">Name</th>
-            <th class="px-4 py-3 text-center">Contact</th>
-            <th class="px-4 py-3 text-center">Address</th>
-            <th class="px-4 py-3 text-center">Status</th>
+            <th class="px-4 py-3 text-center">SKU</th>
+            <th class="px-4 py-3 text-center">Unit</th>
+            <th class="px-4 py-3 text-center">HPP</th>
+            <th class="px-4 py-3 text-center">Margin Sales</th>
+            <th class="px-4 py-3 text-center">Harga Jual</th>
             <th class="px-4 py-3 text-center w-40">Actions</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200">
-          @forelse ($leads as $lead)
+          @forelse ($products as $product)
             <tr>
               <td class="px-4 py-3">
-                <a href="{{ route('leads.show', $lead) }}" class="font-medium hover:underline">
-                  {{ $lead->name }}
+                <a href="{{ route('products.show', $product) }}" class="font-medium hover:underline">
+                  {{ $product->name }}
                 </a>
               </td>
-              <td class="px-4 py-3">{{ $lead->contact }}</td>
-              <td class="px-4 py-3">{{ $lead->address }}</td>
-              <td class="px-4 py-3">
-                <span class="rounded-md bg-neutral-100 px-2 py-1 text-xs">{{ ucfirst($lead->status) }}</span>
-              </td>
+              <td class="px-4 py-3">{{ $product->sku }}</td>
+              <td class="px-4 py-3">{{ $product->unit }}</td>
+              <td class="px-4 py-3 text-right">Rp {{ number_format($product->cost_price,2,',','.') }}</td>
+              <td class="px-4 py-3 text-right">{{ number_format($product->margin_percent,2) }}%</td>
+              <td class="px-4 py-3 text-right">Rp {{ number_format($product->sell_price,2,',','.') }}</td>
               <td class="px-4 py-3">
                 <div class="flex items-center gap-2">
-                  <a href="{{ route('leads.show', $lead) }}" class="underline">View</a>
-                  <a href="{{ route('leads.edit', $lead) }}" class="underline">Edit</a>
-                  <form action="{{ route('leads.destroy', $lead) }}" method="POST"
-                    onsubmit="return confirm('Delete this lead?')">
+                  <a href="{{ route('products.show', $product) }}" class="underline">View</a>
+                  <a href="{{ route('products.edit', $product) }}" class="underline">Edit</a>
+                  <form action="{{ route('products.destroy', $product) }}" method="POST"
+                    onsubmit="return confirm('Delete this product?')">
                     @csrf @method('DELETE')
                     <button class="text-red-600 underline">Delete</button>
                   </form>
@@ -70,7 +66,7 @@
             </tr>
           @empty
             <tr>
-              <td colspan="5" class="px-4 py-6 text-center text-neutral-500">No leads found.</td>
+              <td colspan="7" class="px-4 py-6 text-center text-neutral-500">No products found.</td>
             </tr>
           @endforelse
         </tbody>
@@ -78,7 +74,7 @@
     </div>
 
     <div class="mt-4">
-      {{ $leads->withQueryString()->links() }}
+      {{ $products->withQueryString()->links() }}
     </div>
   </div>
 </x-app-layout>
