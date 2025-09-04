@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('contact');
-            $table->text('address');
-            $table->text('needs');
+            $table->text('address')->nullable();
+            $table->text('needs')->nullable();
             $table->string('status')->default('new');
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
