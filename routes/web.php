@@ -5,6 +5,7 @@ use App\Http\Controllers\LeadController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\CustomerController;
 
 Route::get('/', function () {
   return view('welcome');
@@ -40,6 +41,8 @@ Route::middleware('auth')->group(function () {
       ->name('projects.reject');
   });
   Route::resource('projects', ProjectController::class);
+
+  Route::resource('customers', CustomerController::class)->only(['index','show']);
 });
 
 require __DIR__ . '/auth.php';
