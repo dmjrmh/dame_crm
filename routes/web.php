@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProjectController;
 
 Route::get('/', function () {
   return view('welcome');
@@ -27,8 +28,18 @@ Route::middleware('auth')->group(function () {
 
   Route::resource('leads', LeadController::class);
   Route::resource('products', ProductController::class);
+
+  Route::middleware(['auth', 'role:manager'])->group(function () {
+    Route::get('/projects/approvals', [ProjectController::class, 'approvals'])
+      ->name('approvals');
+
+    Route::put('/projects/{deal}/approve', [ProjectController::class, 'approve'])
+      ->name('projects.approve');
+
+    Route::put('/projects/{deal}/reject', [ProjectController::class, 'reject'])
+      ->name('projects.reject');
+  });
+  Route::resource('projects', ProjectController::class);
 });
-
-
 
 require __DIR__ . '/auth.php';

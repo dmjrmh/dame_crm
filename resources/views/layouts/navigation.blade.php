@@ -16,16 +16,32 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
                 </div>
+
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('leads.index')" :active="request()->routeIs('leads.*')">
                         {{ __('Leads') }}
                     </x-nav-link>
                 </div>
+
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('products.index')" :active="request()->routeIs('products.*')">
                         {{ __('Products') }}
                     </x-nav-link>
                 </div>
+
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('projects.index')" :active="request()->routeIs('projects.*')">
+                        {{ __('Projects') }}
+                    </x-nav-link>
+                </div>
+
+                @if (Auth::user()->role === 'manager')
+                  <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                      <x-nav-link :href="route('approvals')" :active="request()->routeIs('approvals')">
+                          {{ __('Approvals') }}
+                      </x-nav-link>
+                  </div>
+                @endif
             </div>
 
             <!-- Settings Dropdown -->
