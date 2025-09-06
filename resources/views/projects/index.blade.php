@@ -40,6 +40,7 @@
         <thead class="bg-neutral-50 text-left">
           <tr class="*:font-medium *:text-gray-900">
             <th class="px-4 py-3">Title</th>
+            <th class="px-4 py-3">Date</th>
             <th class="px-4 py-3">Customer</th>
             <th class="px-4 py-3">Stage</th>
             <th class="px-4 py-3">Amount</th>
@@ -51,6 +52,9 @@
             <tr>
               <td class="px-4 py-3">
                 <span class="font-medium">{{ $project->title }}</span>
+              </td>
+              <td class="px-4 py-3">
+                <span class="font-medium">{{ $project->date }}</span>
               </td>
               <td class="px-4 py-3">{{ $project->customer?->name ?? '-' }}</td>
               <td class="px-4 py-3">

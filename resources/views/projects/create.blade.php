@@ -57,8 +57,8 @@
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
-          <label class="block text-sm mb-1">Expected Close Date</label>
-          <input name="expected_close_date" type="date" class="rounded-md border px-3 py-2"
+          <label class="block text-sm mb-1">Date</label>
+          <input name="date" type="date" class="rounded-md border px-3 py-2"
             value="{{ date('Y-m-d') }}">
         </div>
 

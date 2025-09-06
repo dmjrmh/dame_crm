@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LeadController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
@@ -42,7 +43,10 @@ Route::middleware('auth')->group(function () {
   });
   Route::resource('projects', ProjectController::class);
 
-  Route::resource('customers', CustomerController::class)->only(['index','show']);
+  Route::resource('customers', CustomerController::class)->only(['index', 'show']);
+  Route::resource('reports', ReportController::class)->only(['index', 'export']);
+  Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+  Route::get('/reports/export', [ReportController::class, 'export'])->name('reports.export');
 });
 
 require __DIR__ . '/auth.php';

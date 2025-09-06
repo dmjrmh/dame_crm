@@ -77,6 +77,7 @@ class ProjectController extends Controller
       $deal = Deal::create([
         'user_id'            => $user->id,
         'title'              => $request->title,
+        'date'               => $request->date,
         'customer_id'        => $request->customer_id,
         'lead_id'            => $request->lead_id,
         'amount'             => $request->amount,
