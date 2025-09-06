@@ -2,29 +2,23 @@
 
 namespace App\Models;
 
-use App\Models\Deal;
+use App\Models\Lead;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Lead extends Model
+class Customer extends Model
 {
   use HasFactory, SoftDeletes;
-
-  const STATUS_NEW = 'new';
-  const STATUS_FOLLOW_UP = 'follow_up';
-  const STATUS_IN_PROGRESS = 'in_progress';
-  const STATUS_CONVERTED = 'converted';
-  const STATUS_LOST = 'lost';
-
   protected $fillable = [
+    'user_id',
+    'lead_id',
     'name',
     'contact',
+    'email',
     'address',
-    'needs',
-    'status',
-    'user_id',
+    'notes'
   ];
 
   public function user()
@@ -32,8 +26,8 @@ class Lead extends Model
     return $this->belongsTo(User::class);
   }
 
-  public function deals()
+  public function lead()
   {
-    return $this->hasMany(Deal::class);
+    return $this->belongsTo(Lead::class);
   }
 }

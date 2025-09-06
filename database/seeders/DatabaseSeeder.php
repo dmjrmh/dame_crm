@@ -5,6 +5,9 @@ namespace Database\Seeders;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Database\Seeders\SalesUserSeeder;
+use Database\Seeders\ManagerUserSeeder;
+use Database\Seeders\PipelineStageSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -21,5 +24,8 @@ class DatabaseSeeder extends Seeder
         // ]);
         $this->call(ManagerUserSeeder::class);
         $this->call(SalesUserSeeder::class);
+        $this->call(PipelineStageSeeder::class);
+        $this->call(LeadSeeder::class);
+        $this->call(ProductSeeder::class);
     }
 }
