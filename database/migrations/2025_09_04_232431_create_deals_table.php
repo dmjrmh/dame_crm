@@ -31,6 +31,7 @@ return new class extends Migration
         ->nullOnDelete();
 
       $table->string('title');
+      $table->date('date');
       $table->decimal('amount', 18, 2)->default(0);
 
       $table->foreignId('pipeline_stage_id')
