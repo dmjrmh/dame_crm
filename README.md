@@ -1,61 +1,91 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Smart CRM (Laravel 12)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+CRM sederhana untuk leads → customers → deals (dengan approval) + products.
+Stack: **Laravel 12**, **Breeze** (Blade + Tailwind), **PostgreSQL**, **Vite**, Maatwebsite Excel (export report).
 
-## About Laravel
+> Catatan proyek:
+> - Semua tabel domain menggunakan **soft deletes**.
+> - HPP = `products.cost_price`.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Prasyarat
+- PHP 8.3+
+- Composer 2.x
+- Node.js 20/22 + NPM
+- PostgreSQL 11+ (atau MySQL jika diubah)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Setup Cepat (Local)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+```bash
+git clone https://github.com/<dmjrmh>/<dame_crm>.git
+cd <dame_crm>
+```
 
-## Learning Laravel
+# 1) Dependensi
+composer install
+npm install
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+# 2) Env
+cp .env.example .env
+php artisan key:generate
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+# 3) Edit .env sesuai database PostgreSQL:
+```
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=smart_crm
+DB_USERNAME=postgres
+DB_PASSWORD=postgres
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+# 4) Lalu migrate + seed:
+```
+php artisan migrate --seed
+php artisan storage:link
+```
 
-## Laravel Sponsors
+# 5) Run:
+```
+npm run dev
+php artisan serve
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Akses: http://127.0.0.1:8000
 
-### Premium Partners
+# 6) Akun Demo (default seeder) 
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Manager: manager / passwordManager
+Sales: elaen / AtminSalesOne || lorenza / AtminSalesTwo || sulley / AtminSalesThree
 
-## Contributing
+## 🗄️ Database Entities
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- **users**: id, name, email, role
+- **leads**: id, user_id, name, contact, status
+- **customers**: id, lead_id, user_id, name, contact
+- **products**: id, name, sku, cost_price, sell_price
+- **deals**: id, user_id, lead_id, customer_id, approval_status, closed_at
+- **deal_items**: id, deal_id, product_id, quantity, unit_price
+- **pipeline_stages**: id, key, name, is_won, is_closed
 
-## Code of Conduct
+## 🔄 Business Flow
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- **Leads**
+  - Sales bisa input calon customer (lead).
+  - Leads bisa diedit/dihapus sebelum jadi deal.
+  - Jika sudah terjadi transaksi → lead otomatis berubah status:
+    - `Won` → ketika deal sukses (approved).
+    - `Lost` → ketika deal ditolak / rejected.
 
-## Security Vulnerabilities
+- **Deals (Projects)**
+  - 1 Deal bisa terdiri dari banyak item produk.
+  - **Approval Rule**:
+    - Jika `deal_items.unit_price >= product.sell_price` → auto approved (mempercepat input data sales).
+    - Jika `deal_items.unit_price < product.sell_price` → butuh approval manager.
+  - Manager bisa approve / reject deal dari halaman approvals.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- **Customers**
+  - Lead yang berstatus `Won` otomatis terkonversi jadi customer baru.
+  - Customer bisa punya banyak deal / layanan aktif.
 
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- **Reporting**
+  - Manager & Sales bisa export laporan ke Excel (lead → customer, revenue, HPP, profit).
