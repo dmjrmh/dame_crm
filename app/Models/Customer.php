@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Deal;
 use App\Models\Lead;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
@@ -29,5 +30,10 @@ class Customer extends Model
   public function lead()
   {
     return $this->belongsTo(Lead::class);
+  }
+
+  public function deals()
+  {
+    return $this->hasMany(Deal::class);
   }
 }
