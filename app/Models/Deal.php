@@ -20,6 +20,7 @@ class Deal extends Model
     'customer_id',
     'lead_id',
     'title',
+    'date',
     'amount',
     'pipeline_stage_id',
     'approval_status',
