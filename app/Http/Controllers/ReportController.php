@@ -27,15 +27,15 @@ class ReportController extends Controller
     $deals = Deal::query()
       ->when($user->role !== 'manager', fn($q) => $q->where('user_id', $user->id))
       ->when($user->role === 'manager' && $salesId, fn($q) => $q->where('user_id', $salesId))
+      ->where('pipeline_stage_id', 4)
       ->whereBetween('date', [$start, $end])
       ->with(['items.product:id,cost_price,sell_price', 'user:id,name', 'customer:id,name'])
       ->get();
 
-    // ---- AGREGASI ----
     $summary = [
       'leads_converted' => $deals->whereNotNull('customer_id')->count(),
       'revenue'         => 0,
-      'cost_price'      => 0, // <— ganti dari hpp
+      'cost_price'      => 0,
       'profit'          => 0,
     ];
 
@@ -48,7 +48,6 @@ class ReportController extends Controller
     }
     $summary['profit'] = $summary['revenue'] - $summary['cost_price'];
 
-    // ---- RINGKASAN PER SALES (manager) ----
     $perSales = collect();
     if ($user->role === 'manager') {
       $perSales = Deal::query()
